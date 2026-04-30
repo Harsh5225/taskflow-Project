@@ -48,11 +48,11 @@ function ProjectView() {
     dispatch(getTasks(projectId));
     dispatch(getDashboardStats(projectId));
 
-    // Set up polling to auto-refresh data every 3 seconds for real-time updates
+    // Set up polling to auto-refresh data every 60 seconds to save server resources
     const interval = setInterval(() => {
       dispatch(getTasks(projectId));
       dispatch(getDashboardStats(projectId));
-    }, 3000);
+    }, 60000);
 
     const checkAdmin = async () => {
       try {
