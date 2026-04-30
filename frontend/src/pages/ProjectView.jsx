@@ -48,11 +48,8 @@ function ProjectView() {
     dispatch(getTasks(projectId));
     dispatch(getDashboardStats(projectId));
 
-    // Set up polling to auto-refresh data every 60 seconds to save server resources
-    const interval = setInterval(() => {
-      dispatch(getTasks(projectId));
-      dispatch(getDashboardStats(projectId));
-    }, 60000);
+    // Fetch once on mount. We rely on optimistic UI updates for local state changes 
+    // to keep the app ultra-lightweight and save 100% of background polling resources.
 
     const checkAdmin = async () => {
       try {
@@ -69,8 +66,6 @@ function ProjectView() {
     };
     checkAdmin();
 
-    // Clean up the interval when the user leaves the page
-    return () => clearInterval(interval);
   }, [projectId, user, dispatch]);
 
   const handleAddMember = async (e) => {
