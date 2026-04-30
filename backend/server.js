@@ -6,6 +6,7 @@ dotenv.config();
 import express from "express";
 import mongoose from "mongoose";
 import cors from "cors";
+import authRoutes from './routes/authRoutes.js';
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -18,9 +19,9 @@ app.get('/api/health', (_req, res) => {
   res.status(200).json({ success: true, message: 'TaskFlow API is running' });
 });
 
-// app.use('/api/auth',  require('./routes/auth'));
-// app.use('/api/tasks', require('./routes/tasks'));
-// app.use('/api/users', require('./routes/users'));
+app.use('/api/auth', authRoutes);
+// app.use('/api/projects', require('./routes/projectRoutes'));
+// app.use('/api/tasks', require('./routes/taskRoutes'));
 
 app.use((_req, res) => {
   res.status(404).json({ success: false, message: 'Route not found' });
