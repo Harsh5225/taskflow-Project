@@ -4,6 +4,7 @@ import {
   getProjects,
   addMember,
   removeMember,
+  deleteProject
 } from '../controllers/projectController.js';
 import { protect } from '../middleware/authMiddleware.js';
 
@@ -15,6 +16,9 @@ router.use(protect);
 router.route('/')
   .post(createProject)
   .get(getProjects);
+
+router.route('/:id')
+  .delete(deleteProject);
 
 router.route('/:id/members')
   .put(addMember);

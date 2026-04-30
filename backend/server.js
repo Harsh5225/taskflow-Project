@@ -19,12 +19,11 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 app.use(cors({
-  origin: "https://taskflow-project-two-mauve.vercel.app",
+  origin: ["https://taskflow-project-two-mauve.vercel.app", "http://localhost:5173", "http://localhost:3000", "https://your-app.vercel.app"],
   credentials: true
 }));
-app.options('*', cors());
 app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(express.urlencoded({ extended: true })); 
 
 app.get('/api/health', (_req, res) => {
   res.status(200).json({ success: true, message: 'TaskFlow API is running' });

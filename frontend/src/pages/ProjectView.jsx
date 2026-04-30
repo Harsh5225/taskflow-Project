@@ -123,11 +123,32 @@ function ProjectView() {
     }
   };
 
+  const handleDeleteProject = async () => {
+    if (window.confirm('Are you sure you want to permanently delete this project? All tasks will be lost!')) {
+      try {
+        await api.delete(`/projects/${projectId}`);
+        navigate('/projects');
+      } catch (error) {
+        alert(error.response?.data?.message || 'Failed to delete project');
+      }
+    }
+  };
+
   const renderKanbanColumn = (status, title) => {
     const columnTasks = tasks.filter(t => t.status === status);
     
+    // Determine glow and border color based on status
+    let glowClass = "";
+    if (status === 'To Do') {
+      glowClass = "border-t-2 border-t-gray-500 shadow-[0_-10px_20px_-10px_rgba(107,114,128,0.4)]";
+    } else if (status === 'In Progress') {
+      glowClass = "border-t-2 border-t-primary shadow-[0_-10px_20px_-10px_rgba(99,102,241,0.4)]";
+    } else if (status === 'Done') {
+      glowClass = "border-t-2 border-t-emerald-500 shadow-[0_-10px_20px_-10px_rgba(16,185,129,0.4)]";
+    }
+
     return (
-      <div className="flex-1 glass-card p-4 border border-white/5 bg-bg-surface/50">
+      <div className={`flex-1 glass-card p-4 border border-white/5 bg-bg-surface/50 transition-all duration-300 hover:shadow-lg ${glowClass}`}>
         <h3 className="font-semibold text-white mb-4 flex items-center gap-2">
           {status === 'To Do' && <Circle size={16} className="text-gray-500" />}
           {status === 'In Progress' && <Clock size={16} className="text-primary" />}
@@ -218,6 +239,9 @@ function ProjectView() {
             <div className="flex items-center gap-3">
               {isProjectAdmin && (
                 <>
+                  <button onClick={handleDeleteProject} className="flex items-center gap-2 px-3 py-1.5 text-sm text-[#f43f5e] hover:bg-[#f43f5e]/10 rounded transition-colors border border-transparent hover:border-[#f43f5e]/30" title="Delete Project">
+                    <Trash2 size={16} /> Delete Project
+                  </button>
                   <button onClick={() => setShowMemberModal(true)} className="flex items-center gap-2 px-3 py-1.5 text-sm btn-ghost">
                     <UserPlus size={16} /> Add Member
                   </button>

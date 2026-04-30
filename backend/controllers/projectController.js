@@ -112,3 +112,26 @@ export const removeMember = async (req, res, next) => {
     next(error);
   }
 };
+
+// @desc    Delete a project
+// @route   DELETE /api/projects/:id
+// @access  Private (Admin only)
+export const deleteProject = async (req, res, next) => {
+  try {
+    const projectId = req.params.id;
+    const project = await Project.findById(projectId);
+
+    if (!project) {
+      return res.status(404).json({ success: false, message: 'Project not found' });
+    }
+
+    if (project.admin.toString() !== req.user._id.toString()) {
+      return res.status(403).json({ success: false, message: 'Not authorized to delete this project. Admin only.' });
+    }
+
+    await project.deleteOne();
+    res.status(200).json({ success: true, data: {} });
+  } catch (error) {
+    next(error);
+  }
+};

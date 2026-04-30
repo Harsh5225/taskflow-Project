@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { logout } from '../features/auth/authSlice';
 import api from '../utils/api';
-import { LogOut, Plus, Folder } from 'lucide-react';
+import { LogOut, Plus, Folder, Loader2 } from 'lucide-react';
 
 function ProjectsDashboard() {
   const navigate = useNavigate();
@@ -11,6 +11,7 @@ function ProjectsDashboard() {
   const { user } = useSelector((state) => state.auth);
 
   const [projects, setProjects] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [newProject, setNewProject] = useState({ name: '', description: '' });
 
@@ -26,6 +27,8 @@ function ProjectsDashboard() {
         setProjects(data.data);
       } catch (error) {
         console.error('Error fetching projects', error);
+      } finally {
+        setIsLoading(false);
       }
     };
 
@@ -86,7 +89,11 @@ function ProjectsDashboard() {
           </button>
         </div>
 
-        {projects.length === 0 ? (
+        {isLoading ? (
+          <div className="flex justify-center items-center py-20">
+            <Loader2 className="w-8 h-8 text-primary animate-spin" />
+          </div>
+        ) : projects.length === 0 ? (
           <div className="text-center py-20 glass-card">
             <Folder className="mx-auto h-12 w-12 text-primary/50 mb-4" />
             <h3 className="text-lg font-medium text-white mb-2">No projects yet</h3>
