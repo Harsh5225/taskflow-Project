@@ -2,6 +2,7 @@ import express from 'express';
 import {
   createTask,
   updateTask,
+  deleteTask,
   getTasksForProject,
   getDashboardStats
 } from '../controllers/taskController.js';
@@ -15,7 +16,8 @@ router.route('/')
   .post(createTask);
 
 router.route('/:id')
-  .put(updateTask);
+  .put(updateTask)
+  .delete(deleteTask);
 
 router.route('/project/:projectId')
   .get(getTasksForProject);

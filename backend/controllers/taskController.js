@@ -165,3 +165,29 @@ export const getDashboardStats = async (req, res, next) => {
     next(error);
   }
 };
+
+// @desc    Delete a task
+// @route   DELETE /api/tasks/:id
+// @access  Private (Admin only)
+export const deleteTask = async (req, res, next) => {
+  try {
+    const task = await Task.findById(req.params.id).populate('project');
+
+    if (!task) {
+      return res.status(404).json({ success: false, message: 'Task not found' });
+    }
+
+    const proj = task.project;
+    const isAdmin = proj.admin.toString() === req.user._id.toString();
+
+    if (!isAdmin) {
+      return res.status(403).json({ success: false, message: 'Not authorized. Only project admin can delete tasks' });
+    }
+
+    await task.deleteOne();
+
+    res.status(200).json({ success: true, data: {} });
+  } catch (error) {
+    next(error);
+  }
+};
