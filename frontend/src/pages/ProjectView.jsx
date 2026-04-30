@@ -4,6 +4,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import api from '../utils/api';
 import { getTasks, getDashboardStats, createTask, updateTaskStatus, optimisticUpdateStatus, deleteTask } from '../features/tasks/taskSlice';
 import { ArrowLeft, UserPlus, Plus, Calendar, Clock, CheckCircle, Circle, BarChart2, LayoutDashboard, Trash2, Quote } from 'lucide-react';
+import { BarChart, Bar, XAxis, YAxis, Tooltip as RechartsTooltip, ResponsiveContainer, Cell } from 'recharts';
 
 const motivationalQuotes = [
   "“The secret of getting ahead is getting started.” – Mark Twain",
@@ -246,33 +247,54 @@ function ProjectView() {
           <div className="space-y-6">
             <h2 className="text-2xl font-bold text-white">Project Analytics</h2>
             {stats && (
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-                <div className="glass-card p-6 border-white/10">
-                  <h3 className="text-text-muted text-sm font-medium mb-1">Total Tasks</h3>
-                  <p className="text-3xl font-mono font-bold text-white">{stats.totalTasks}</p>
-                </div>
-                <div className="glass-card p-6 border-red-500/20">
-                  <h3 className="text-[#f43f5e] text-sm font-medium mb-1">Overdue Tasks</h3>
-                  <p className="text-3xl font-mono font-bold text-[#f43f5e]">{stats.overdueTasks}</p>
-                </div>
-                <div className="glass-card p-6 border-white/10 md:col-span-2">
-                  <h3 className="text-text-muted text-sm font-medium mb-4">Tasks by Status</h3>
-                  <div className="flex items-center gap-4">
-                    <div className="flex-1">
-                      <div className="flex justify-between text-sm mb-1"><span className="text-text-muted">To Do</span><span className="font-mono">{stats.tasksByStatus['To Do']}</span></div>
-                      <div className="w-full bg-white/10 rounded-full h-2"><div className="bg-gray-400 h-2 rounded-full" style={{width: `${(stats.tasksByStatus['To Do']/stats.totalTasks)*100}%`}}></div></div>
-                    </div>
-                    <div className="flex-1">
-                      <div className="flex justify-between text-sm mb-1"><span className="text-primary">In Progress</span><span className="font-mono text-primary">{stats.tasksByStatus['In Progress']}</span></div>
-                      <div className="w-full bg-white/10 rounded-full h-2"><div className="bg-primary h-2 rounded-full" style={{width: `${(stats.tasksByStatus['In Progress']/stats.totalTasks)*100}%`}}></div></div>
-                    </div>
-                    <div className="flex-1">
-                      <div className="flex justify-between text-sm mb-1"><span className="text-emerald-500">Done</span><span className="font-mono text-emerald-500">{stats.tasksByStatus['Done']}</span></div>
-                      <div className="w-full bg-white/10 rounded-full h-2"><div className="bg-emerald-500 h-2 rounded-full" style={{width: `${(stats.tasksByStatus['Done']/stats.totalTasks)*100}%`}}></div></div>
-                    </div>
+              <>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                  <div className="glass-card p-6 border-white/10">
+                    <h3 className="text-text-muted text-sm font-medium mb-1">Total Tasks</h3>
+                    <p className="text-4xl font-mono font-bold text-white">{stats.totalTasks}</p>
+                  </div>
+                  <div className="glass-card p-6 border-red-500/20">
+                    <h3 className="text-[#f43f5e] text-sm font-medium mb-1">Overdue Tasks</h3>
+                    <p className="text-4xl font-mono font-bold text-[#f43f5e]">{stats.overdueTasks}</p>
                   </div>
                 </div>
-              </div>
+
+                <div className="glass-card p-6 border-white/10">
+                  <h3 className="text-text-muted text-sm font-medium mb-6">Tasks by Status Overview</h3>
+                  <div className="h-72 w-full">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <BarChart
+                        data={[
+                          { name: 'To Do', value: stats.tasksByStatus['To Do'], color: '#9ca3af' },
+                          { name: 'In Progress', value: stats.tasksByStatus['In Progress'], color: '#6366f1' },
+                          { name: 'Done', value: stats.tasksByStatus['Done'], color: '#10b981' }
+                        ]}
+                        margin={{ top: 20, right: 30, left: 0, bottom: 5 }}
+                        barSize={60}
+                      >
+                        <XAxis dataKey="name" stroke="#6b7280" tick={{ fill: '#9ca3af' }} />
+                        <YAxis stroke="#6b7280" tick={{ fill: '#9ca3af' }} allowDecimals={false} />
+                        <RechartsTooltip 
+                          cursor={{ fill: 'rgba(255, 255, 255, 0.05)' }}
+                          contentStyle={{ backgroundColor: '#111111', borderColor: 'rgba(255,255,255,0.1)', borderRadius: '8px' }}
+                          itemStyle={{ color: '#fff' }}
+                        />
+                        <Bar dataKey="value" radius={[6, 6, 0, 0]}>
+                          {
+                            [
+                              { name: 'To Do', color: '#9ca3af' },
+                              { name: 'In Progress', color: '#6366f1' },
+                              { name: 'Done', color: '#10b981' }
+                            ].map((entry, index) => (
+                              <Cell key={`cell-${index}`} fill={entry.color} />
+                            ))
+                          }
+                        </Bar>
+                      </BarChart>
+                    </ResponsiveContainer>
+                  </div>
+                </div>
+              </>
             )}
           </div>
         )}
