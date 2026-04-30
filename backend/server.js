@@ -7,6 +7,7 @@ import express from "express";
 import mongoose from "mongoose";
 import cors from "cors";
 import authRoutes from './routes/authRoutes.js';
+import projectRoutes from './routes/projectRoutes.js';
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -20,7 +21,7 @@ app.get('/api/health', (_req, res) => {
 });
 
 app.use('/api/auth', authRoutes);
-// app.use('/api/projects', require('./routes/projectRoutes'));
+app.use('/api/projects', projectRoutes);
 // app.use('/api/tasks', require('./routes/taskRoutes'));
 
 app.use((_req, res) => {
