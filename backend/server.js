@@ -19,9 +19,10 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 app.use(cors({
-  origin: "https://taskflow-project-two-mauve.vercel.app/",
+  origin: "https://taskflow-project-two-mauve.vercel.app",
   credentials: true
 }));
+app.options('*', cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
